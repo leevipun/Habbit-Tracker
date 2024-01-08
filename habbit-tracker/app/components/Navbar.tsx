@@ -1,21 +1,18 @@
-"use client";
+'use client';
 
 const Navbar = () => {
   return (
-    <nav className="navbar">
-      <div className="links">
-        <ul className="list-none flex">
-          <li className="m-5">
-            <a href="/">Home</a>
+    <nav className='navbar'>
+      <div className='links'>
+        <ul className='list-none flex'>
+          <li className='m-5'>
+            <a href='/'>Home</a>
           </li>
-          <li className="m-5">
-            <a href="/about">About</a>
+          <li className='m-5'>
+            <a href='/about'>About</a>
           </li>
-          <li className="m-5">
-            <a href="/habbits">Habbits</a>
-          </li>
-          <li className="m-5">
-            <a href="/login">Login</a>
+          <li className='m-5'>
+            <a href='/login'>Login</a>
           </li>
         </ul>
       </div>

@@ -3,6 +3,7 @@
 import React, {useState} from 'react';
 import {Checkbox, Input, Button} from 'antd';
 import {Day} from '../types/types';
+import {set} from 'mongoose';
 
 interface HabbitCardProps {
   day: Day;
@@ -10,6 +11,7 @@ interface HabbitCardProps {
 }
 
 const HabbitCard: React.FC<HabbitCardProps> = ({day, setDays}) => {
+  const [habbitName, setHabbitName] = useState<string>('');
   const [edit, setEdit] = useState<boolean>(false);
   const [editId, setEditId] = useState<number>();
   const [editPast, setEditPast] = useState<boolean>(false);
@@ -24,6 +26,24 @@ const HabbitCard: React.FC<HabbitCardProps> = ({day, setDays}) => {
   };
 
   const handleCancel = () => {
+    setEditId(undefined);
+    setEdit(false);
+  };
+
+  const handleEditHabbit = () => {
+    // Assuming day is the current day object from your state
+    const updatedHabits = [
+      ...day.habbits,
+      {id: day.habbits.length + 1, name: habbitName, status: false},
+    ];
+
+    // Assuming you have a setDays function to update the state
+    setDays((prevDays) =>
+      prevDays.map((d) =>
+        d.id === day.id ? {...d, habbits: updatedHabits} : d
+      )
+    );
+
     setEditId(undefined);
     setEdit(false);
   };
@@ -47,6 +67,8 @@ const HabbitCard: React.FC<HabbitCardProps> = ({day, setDays}) => {
     );
   };
 
+  const checkIfToday = () => {};
+
   return (
     <div>
       <div
@@ -55,8 +77,11 @@ const HabbitCard: React.FC<HabbitCardProps> = ({day, setDays}) => {
       >
         {edit && day.id === editId ? (
           <div>
-            <Input />
-            <Button>Save</Button>
+            <Input
+              value={habbitName}
+              onChange={(e) => setHabbitName(e.target.value)}
+            />
+            <Button onClick={() => handleEditHabbit()}>Save</Button>
             <Button onClick={handleCancel}>Cancel</Button>
           </div>
         ) : (

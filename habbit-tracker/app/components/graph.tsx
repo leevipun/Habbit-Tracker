@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chart } from 'react-google-charts';
+import {Chart} from 'react-google-charts';
 
 interface Habit {
   id: number;
@@ -10,7 +10,7 @@ interface Habit {
 interface Day {
   id: number;
   date: string;
-  habits: Habit[];
+  habbits: Habit[];
 }
 
 const calculateCompletionPercentage = (habits: Habit[]): number => {
@@ -19,101 +19,34 @@ const calculateCompletionPercentage = (habits: Habit[]): number => {
   return (completedHabits / totalHabits) * 100 || 0;
 };
 
-const Graph: React.FC = () => {
-
-  const days = [
-    {
-      id: 1,
-      date: "29.09.2021",
-      habits: [
-        {
-          id: 1,
-          name: "Running",
-          status: true,
-        },
-        {
-          id: 2,
-          name: "Reading",
-          status: true,
-        },
-        {
-          id: 3,
-          name: "Coding",
-          status: false,
-        },
-      ],
-    },
-    {
-      id: 2,
-      date: "30.09.2021",
-      habits: [
-        {
-          id: 1,
-          name: "Running",
-          status: true,
-        },
-        {
-          id: 2,
-          name: "Reading",
-          status: false,
-        },
-        {
-          id: 3,
-          name: "Coding",
-          status: false,
-        },
-      ],
-    },
-    {
-      id: 3,
-      date: "6/1/2024",
-      habits: [
-        {
-          id: 1,
-          name: "Running",
-          status: true,
-        },
-        {
-          id: 2,
-          name: "Reading",
-          status: true,
-        },
-        {
-          id: 3,
-          name: "Coding",
-          status: true,
-        },
-      ],
-    },
-  ]
-
-
+const Graph = ({days}: {days: Day[]}) => {
+  console.log;
   const data = days.map((day) => {
-    return [day.date, calculateCompletionPercentage(day.habits)];
+    return [day.date, calculateCompletionPercentage(day.habbits)];
   });
 
   return (
     <div>
       <Chart
-        className="w-full"
-        height={"300px"}
-        chartType="Line"
+        className='w-full'
+        height={'300px'}
+        chartType='Line'
         loader={<div>Loading Chart</div>}
-        data={[["Date", "Completion Percentage"], ...data]}
+        data={[['Date', 'Completion Percentage'], ...data]}
         options={{
           chart: {
-            title: "Habit Completion Percentage Over Time",
+            title: 'Habit Completion Percentage Over Time',
           },
           hAxis: {
-            title: "Date",
+            title: 'Date',
           },
           vAxis: {
-            title: "Completion Percentage",
+            title: 'Completion Percentage',
             minValue: 0,
             maxValue: 110,
           },
         }}
-        rootProps={{ "data-testid": "1" }}
+        rootProps={{'data-testid': '1'}}
       />
     </div>
   );

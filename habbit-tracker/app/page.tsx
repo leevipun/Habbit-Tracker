@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Navbar from './components/Navbar';
 import HabbitCard from './components/habbitCard';
 import {Day} from './types/types';
@@ -73,21 +73,55 @@ export default function Home() {
     },
   ]);
 
+  const checkIfToday = () => {
+    const today = new Date();
+    const todayFormatted = `${today.getDate()}/${
+      today.getMonth() + 1
+    }/${today.getFullYear()}`;
+    const isTodayAlreadyAdded = days.some((day) => day.date === todayFormatted);
+    if (!isTodayAlreadyAdded) {
+      setDays((prevDays) => [
+        ...prevDays,
+        {
+          id: prevDays.length + 1,
+          date: todayFormatted,
+          habbits: [
+            {
+              id: 1,
+              name: 'Running',
+              status: false,
+            },
+            {
+              id: 2,
+              name: 'Reading',
+              status: false,
+            },
+            {
+              id: 3,
+              name: 'Coding',
+              status: false,
+            },
+          ],
+        },
+      ]);
+    }
+  };
+
+  checkIfToday();
+
   return (
     <main>
       <div>
         <Navbar />
-        <h1>Habbit Tracker</h1>
-        <p>Track your habits</p>
       </div>
-      <div className='bg-blue-500 flex flex-wrap'>
+      <div className='bg-blue-500 flex flex-wrap min-h-300'>
         {days.map((day) => (
-          <div key={day.id} className='w-1/5 min-h-80 max-h-80 p-4'>
+          <div key={day.id} className='w-1/5 min-h-80 max-h-300 p-4'>
             <HabbitCard day={day} setDays={setDays} />
           </div>
         ))}
       </div>
-      <Graph />
+      <Graph days={days} />
     </main>
   );
 }
