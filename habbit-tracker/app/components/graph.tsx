@@ -1,26 +1,14 @@
 import React from 'react';
 import {Chart} from 'react-google-charts';
+import {Day, Habbit} from '../types/types';
 
-interface Habit {
-  id: number;
-  name: string;
-  status: boolean;
-}
-
-interface Day {
-  id: number;
-  date: string;
-  habbits: Habit[];
-}
-
-const calculateCompletionPercentage = (habits: Habit[]): number => {
+const calculateCompletionPercentage = (habits: Habbit[]): number => {
   const totalHabits = habits.length;
   const completedHabits = habits.filter((habit) => habit.status).length;
   return (completedHabits / totalHabits) * 100 || 0;
 };
 
 const Graph = ({days}: {days: Day[]}) => {
-  console.log;
   const data = days.map((day) => {
     return [day.date, calculateCompletionPercentage(day.habbits)];
   });
@@ -37,14 +25,12 @@ const Graph = ({days}: {days: Day[]}) => {
           chart: {
             title: 'Habit Completion Percentage Over Time',
           },
-          hAxis: {
-            title: 'Date',
-          },
           vAxis: {
-            title: 'Completion Percentage',
             minValue: 0,
             maxValue: 110,
           },
+          colors: ['#CC5500'],
+          backgroundColor: '#81d4fa',
         }}
         rootProps={{'data-testid': '1'}}
       />

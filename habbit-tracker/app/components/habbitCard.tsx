@@ -75,6 +75,7 @@ const HabbitCard: React.FC<HabbitCardProps> = ({day, setDays}) => {
         key={day.id}
         className=' bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'
       >
+        <p>{day.date}</p>
         {edit && day.id === editId ? (
           <div>
             <Input
@@ -107,15 +108,9 @@ const HabbitCard: React.FC<HabbitCardProps> = ({day, setDays}) => {
           ) : (
             <Button onClick={() => setEditPast(true)}>Edit</Button>
           )
-        ) : (
-          <Button>Save</Button>
-        )}
+        ) : null}
         {day.date === today && !edit ? (
-          <Button
-            onClick={() => handleEdit(day.id)}
-            className='ml-5'
-            type='dashed'
-          >
+          <Button onClick={() => handleEdit(day.id)} type='dashed'>
             Add new Habbit
           </Button>
         ) : null}
