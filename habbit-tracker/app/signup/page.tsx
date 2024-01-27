@@ -3,7 +3,7 @@
 import {Button, Checkbox, Form, Input, Radio} from 'antd';
 import React, {useState} from 'react';
 import {Habbit} from '../types/types';
-import uuid from 'react-uuid';
+import {v4 as uuid} from 'uuid';
 import {signUp} from '../utils/habbitFunc';
 import {useRouter} from 'next/navigation';
 
