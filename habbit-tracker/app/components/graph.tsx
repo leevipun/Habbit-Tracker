@@ -1,6 +1,7 @@
 import React from 'react';
 import {Chart} from 'react-google-charts';
 import {Day, Habbit} from '../types/types';
+import {useState} from 'react';
 
 const calculateCompletionPercentage = (habits: Habbit[]): number => {
   const totalHabits = habits.length;
@@ -8,7 +9,8 @@ const calculateCompletionPercentage = (habits: Habbit[]): number => {
   return (completedHabits / totalHabits) * 100 || 0;
 };
 
-const Graph = ({days}: {days: Day[]}) => {
+const Graph = () => {
+  const [days, setDays] = useState<Day[]>([]);
   const data = days.map((day) => {
     return [day.date, calculateCompletionPercentage(day.habbits)];
   });

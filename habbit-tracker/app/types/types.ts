@@ -1,11 +1,11 @@
 export interface Habbit {
+  id: string;
   name: string;
   status: boolean;
-  id: number;
 }
 
 export interface Day {
-  id: number;
+  id: string;
   date: string;
   habbits: Habbit[];
 }

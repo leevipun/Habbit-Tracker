@@ -1,6 +1,9 @@
 'use client';
 
 const Navbar = () => {
+  const handleLogout = async () => {
+    window.location.href = '/api/auth/signout';
+  };
   return (
     <nav className='navbar'>
       <div className='links'>
@@ -11,8 +14,8 @@ const Navbar = () => {
           <li className='m-5'>
             <a href='/about'>About</a>
           </li>
-          <li className='m-5'>
-            <a href='/login'>Login</a>
+          <li className='m-5' onClick={handleLogout}>
+            <a>Log out</a>
           </li>
         </ul>
       </div>
