@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Button} from 'antd';
 import {Day, Habbit} from '../types/types';
 import HabbitCard from './habbitCard';
-import uuid from 'react-uuid';
+import {v4 as uuid} from 'uuid';
 import {useSession} from 'next-auth/react';
 import {redirect} from 'next/navigation';
 type User = {
