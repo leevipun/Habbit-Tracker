@@ -4,6 +4,12 @@ import {User} from '@/app/models/user';
 import connect from '@/app/utils/connection';
 import {revalidatePath} from 'next/cache';
 
+interface DayData {
+  id: string;
+  date: string;
+  habbits: string[];
+}
+
 export const POST = async (req: NextRequest) => {
   try {
     const {email, day} = await req.json(); // Use req.body.json() to get JSON data
@@ -18,7 +24,7 @@ export const POST = async (req: NextRequest) => {
       today.getMonth() + 1
     }/${today.getFullYear()}`;
     const isTodayAlreadyAdded = user?.days?.some(
-      (day: Day) => day.date === todayFormatted
+      (day: DayData) => day.date === todayFormatted
     );
 
     if (isTodayAlreadyAdded) {
