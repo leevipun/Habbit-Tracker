@@ -29,6 +29,10 @@ const HabbitCard = ({day, setDays}: HabbitCardProps) => {
     setEdit(false);
   };
 
+  const handleSave = () => {
+    console.log('save');
+  };
+
   return (
     <div>
       <div
@@ -42,6 +46,7 @@ const HabbitCard = ({day, setDays}: HabbitCardProps) => {
               value={habbitName}
               onChange={(e) => setHabbitName(e.target.value)}
             />
+            <Button onClick={handleSave}>Save</Button>
             <Button onClick={handleCancel}>Cancel</Button>
           </div>
         ) : (
