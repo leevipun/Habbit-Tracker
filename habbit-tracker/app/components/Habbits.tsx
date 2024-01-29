@@ -127,7 +127,6 @@ const Habbits = () => {
     if (session) {
       fetchData();
       checkIfToday();
-      console.log('user', user);
     } else {
       console.log('No session');
     }

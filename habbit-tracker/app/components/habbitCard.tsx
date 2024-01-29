@@ -33,6 +33,10 @@ const HabbitCard = ({day, setDays}: HabbitCardProps) => {
     console.log('save');
   };
 
+  const handleCheckBoxChange = (id: string) => {
+    console.log(id);
+  };
+
   return (
     <div>
       <div
@@ -56,6 +60,7 @@ const HabbitCard = ({day, setDays}: HabbitCardProps) => {
                 <Checkbox
                   disabled={day.date !== today ? !editPast : false}
                   checked={habit.status}
+                  onChange={() => handleCheckBoxChange(habit.id)}
                 >
                   {habit.name}
                 </Checkbox>

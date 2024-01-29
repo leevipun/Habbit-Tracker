@@ -23,11 +23,14 @@ export const POST = async (req: NextRequest) => {
     const todayFormatted = `${today.getDate()}/${
       today.getMonth() + 1
     }/${today.getFullYear()}`;
+    console.log(todayFormatted);
+    console.log(user.days);
     const isTodayAlreadyAdded = user?.days?.some(
       (day: DayData) => day.date === todayFormatted
     );
 
     if (isTodayAlreadyAdded) {
+      console.log('Day already added');
       return new NextResponse('Day already added', {status: 400});
     }
     const NewDay = new Day({
