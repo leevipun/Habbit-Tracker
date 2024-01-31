@@ -9,3 +9,9 @@ export interface Day {
   date: string;
   habbits: Habbit[];
 }
+
+export interface UserTypes {
+  id: string;
+  email: string;
+  days: Day[];
+}

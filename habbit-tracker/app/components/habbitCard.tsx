@@ -3,13 +3,16 @@
 import React, {useState} from 'react';
 import {Checkbox, Input, Button} from 'antd';
 import {Day} from '../types/types';
+import {useSession} from 'next-auth/react';
+import {redirect} from 'next/navigation';
+import {User} from '@/app/models/user';
 
 interface HabbitCardProps {
   day: Day;
-  setDays: React.Dispatch<React.SetStateAction<Day[]>>;
+  handleCheckBoxChange: (id: string, dayId: string) => void;
 }
 
-const HabbitCard = ({day, setDays}: HabbitCardProps) => {
+const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
   const [habbitName, setHabbitName] = useState<string>('');
   const [edit, setEdit] = useState<boolean>(false);
   const [editId, setEditId] = useState<string>();
@@ -18,6 +21,14 @@ const HabbitCard = ({day, setDays}: HabbitCardProps) => {
   const today = `${date.getDate()}/${
     date.getMonth() + 1
   }/${date.getFullYear()}`;
+
+  console.log(day);
+
+  const mappedHabbits = day.habbits.map((habit) => {
+    console.log(habit);
+  });
+
+  mappedHabbits;
 
   const handleEdit = (id: string) => {
     setEditId(id);
@@ -31,10 +42,6 @@ const HabbitCard = ({day, setDays}: HabbitCardProps) => {
 
   const handleSave = () => {
     console.log('save');
-  };
-
-  const handleCheckBoxChange = (id: string) => {
-    console.log(id);
   };
 
   return (
@@ -60,7 +67,7 @@ const HabbitCard = ({day, setDays}: HabbitCardProps) => {
                 <Checkbox
                   disabled={day.date !== today ? !editPast : false}
                   checked={habit.status}
-                  onChange={() => handleCheckBoxChange(habit.id)}
+                  onChange={() => handleCheckBoxChange(habit.id, day.id)}
                 >
                   {habit.name}
                 </Checkbox>

@@ -14,10 +14,12 @@ const userSchema = new mongoose.Schema({
     type: Array,
     required: false,
   },
-  days: {
-    type: Array,
-    required: false,
-  },
+  days: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Day',
+    },
+  ],
 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);

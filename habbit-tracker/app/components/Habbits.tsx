@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, use} from 'react';
 import {Button} from 'antd';
 import {Day, Habbit} from '../types/types';
 import HabbitCard from './habbitCard';
@@ -20,17 +20,14 @@ const Habbits = () => {
       redirect('/api/auth/signin?callbackUrl=/');
     },
   });
-  const email = session?.user?.email;
   const [user, setUser] = useState<User | null>(null);
   const [showedDays, setShowedDays] = useState<Day[]>([]);
   const [days, setDays] = useState<Day[]>([]);
   const [visibleData, setVisibleData] = useState<number>(6);
   const TotalRows = Math.ceil(user?.days?.length ?? 0 / 6);
 
-  const checkIfToday = () => {};
-
   const sortedDays: Day[] =
-    user?.days?.sort((a, b) => {
+    days?.sort((a, b) => {
       const formattedDays = a.date.split('/');
       const formattedDaysB = b.date.split('/');
       const dateA = new Date(
@@ -47,15 +44,6 @@ const Habbits = () => {
       return dateA.getTime() - dateB.getTime();
     }) || [];
 
-  const renderRows = () => {
-    const visibleDays = sortedDays?.reverse().slice(0, visibleData);
-    return visibleDays?.map((day) => (
-      <div key={day.id} className='w-1/6 min-h-80 max-h-300 p-4'>
-        <HabbitCard day={day} setDays={setShowedDays} />
-      </div>
-    ));
-  };
-
   const handleShowLess = () => {
     if (visibleData === 6) {
       return;
@@ -71,66 +59,48 @@ const Habbits = () => {
     setVisibleData((prev) => prev + 6);
   };
 
-  const fetchData = async () => {
-    try {
-      const sentEmail = session?.user?.email;
-      console.log(sentEmail);
-
-      const response = await fetch('/api/habbits', {
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/api/habbits/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email: sentEmail}),
+        body: JSON.stringify({email: session?.user?.email}),
       });
-
-      if (response.ok) {
-        const user = await response.json();
-        console.log('user', user);
-        setDays(user.days);
-        setUser(user);
-        const today = new Date();
-        const todayFormatted = `${today.getDate()}/${
-          today.getMonth() + 1
-        }/${today.getFullYear()}`;
-        const isTodayAlreadyAdded = user?.days?.some(
-          (day: Day) => day.date === todayFormatted
-        );
-        if (!isTodayAlreadyAdded) {
-          const newDay: Day = {
-            id: uuid(),
-            date: todayFormatted,
-            habbits:
-              user?.habits?.map((habit: Habbit) => ({
-                id: habit.id,
-                name: habit.name,
-                status: false,
-              })) || [],
-          };
-          fetch('/api/habbits/addNewDay', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({email: sentEmail, day: newDay}),
-          });
-        }
-      } else {
-        console.error('Failed to fetch days');
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    if (session) {
+      const data = await response.json();
+      console.log(data);
+      setDays(data);
+    };
+    if (session?.user?.email) {
       fetchData();
-      checkIfToday();
-    } else {
-      console.log('No session');
+      checkToday();
     }
-  }, [session]);
+  }, [session?.user?.email]);
+
+  const checkToday = () => {};
+
+  async function handleCheckBoxChange(id: string, Dayid: string) {
+    const response = await fetch('/api/habbits/updateHabbit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({id: id, Dayid: Dayid}),
+    });
+    setUser(await response.json());
+    return null;
+  }
+
+  const renderRows = () => {
+    const visibleDays = sortedDays?.reverse().slice(0, visibleData);
+    console.log('visibleDays', visibleDays);
+    return visibleDays?.map((day) => (
+      <div key={day.id} className='w-1/6 min-h-80 max-h-300 p-4'>
+        <HabbitCard day={day} handleCheckBoxChange={handleCheckBoxChange} />
+      </div>
+    ));
+  };
 
   return (
     <div>

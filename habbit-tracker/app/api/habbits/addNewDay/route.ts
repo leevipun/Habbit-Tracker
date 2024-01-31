@@ -1,47 +1,50 @@
 import {NextRequest, NextResponse} from 'next/server';
-import {Day} from '@/app/models/habbit';
+import {Day} from '@/app/models/day';
 import {User} from '@/app/models/user';
 import connect from '@/app/utils/connection';
-import {revalidatePath} from 'next/cache';
-
-interface DayData {
-  id: string;
-  date: string;
-  habbits: string[];
-}
+import {v4 as uuid} from 'uuid';
+import {Habbit} from '@/app/types/types';
 
 export const POST = async (req: NextRequest) => {
   try {
-    const {email, day} = await req.json(); // Use req.body.json() to get JSON data
+    const {email} = await req.json();
     await connect();
-    console.log(email);
     const user = await User.findOne({email: email});
     if (!user) {
       return new NextResponse('User not found', {status: 404});
     }
-    const today = new Date();
-    const todayFormatted = `${today.getDate()}/${
-      today.getMonth() + 1
-    }/${today.getFullYear()}`;
-    console.log(todayFormatted);
-    console.log(user.days);
-    const isTodayAlreadyAdded = user?.days?.some(
-      (day: DayData) => day.date === todayFormatted
-    );
 
-    if (isTodayAlreadyAdded) {
-      console.log('Day already added');
-      return new NextResponse('Day already added', {status: 400});
+    const date = new Date();
+    const formattedDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()}`;
+
+    const day = await Day.findOne({date: formattedDate, user: email});
+    if (day) {
+      return new NextResponse('Day already exists', {status: 409});
     }
-    const NewDay = new Day({
-      id: day.id,
-      date: day.date,
-      habbits: day.habbits,
+
+    const Newday = new Day({
+      id: uuid(),
+      user: email,
+      date: formattedDate,
+      habbits: user.habits.map((habit: Habbit) => {
+        return {
+          id: uuid(),
+          name: habit.name,
+          status: false,
+        };
+      }),
     });
-    user.days.push(NewDay);
+    const savedDay = await Newday.save();
+
+    user.days = user.days.concat(savedDay._id);
+
+    console.log(user);
+
     await user.save();
-    revalidatePath('/');
-    return new NextResponse(JSON.stringify(user), {status: 200});
+
+    return new NextResponse('Day added', {status: 200});
   } catch (error) {
     console.error(error);
     return new NextResponse('Day fetching failed', {status: 500});

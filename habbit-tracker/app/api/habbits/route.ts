@@ -1,7 +1,6 @@
-import {Day} from '@/app/models/habbit';
+import {Day} from '@/app/models/day';
 import {User} from '@/app/models/user';
 import connect from '@/app/utils/connection';
-import {revalidatePath} from 'next/cache';
 import {NextRequest, NextResponse} from 'next/server';
 
 export const POST = async (req: NextRequest) => {
@@ -13,31 +12,14 @@ export const POST = async (req: NextRequest) => {
     if (!user) {
       return new NextResponse('User not found', {status: 404});
     }
-    console.log(user);
-    return new NextResponse(JSON.stringify(user), {status: 200});
-  } catch (error) {
-    console.error(error);
-    return new NextResponse('Day fetching failed', {status: 500});
-  }
-};
-
-export const PUT = async (req: NextRequest) => {
-  try {
-    const {email, day} = await req.json(); // Use req.body.json() to get JSON data
-    await connect();
-    console.log(email);
-    const editedDay = new Day({
-      id: day.id,
-      date: day.date,
-      habbits: day.habbits,
-    });
-    const user = await User.findOneAndUpdate(
-      {email: email, 'days.id': day.id},
-      {$pull: {days: {id: day.id}}, $push: {days: editedDay}},
-      {new: true}
+    console.log(user.days);
+    const habbits = await Promise.all(
+      user.days.map(async (id: string) => {
+        return await Day.findById(id);
+      })
     );
-    revalidatePath('/');
-    return new NextResponse(JSON.stringify(user), {status: 200});
+    console.log('habbits', habbits);
+    return new NextResponse(JSON.stringify(habbits), {status: 200});
   } catch (error) {
     console.error(error);
     return new NextResponse('Day fetching failed', {status: 500});
