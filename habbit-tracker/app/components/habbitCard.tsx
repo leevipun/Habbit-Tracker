@@ -34,7 +34,7 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
     },
   });
 
-  const handleModalCancel = (dayId: string) => {
+  const handleModalCancel = () => {
     setHabbitName('');
     setAddToEveryday(false);
     setEdit(false);
@@ -135,7 +135,7 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
         <Modal
           title='Add new Habbit'
           visible={showmodal}
-          onCancel={() => handleModalCancel(day.id)}
+          onCancel={() => handleModalCancel()}
           footer={null}
         >
           <div>
@@ -153,7 +153,7 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
             </Checkbox>
           </div>
           <div>
-            <Button onClick={() => handleModalCancel(day.id)}>Cancel</Button>
+            <Button onClick={() => handleModalCancel()}>Cancel</Button>
             <Button onClick={() => saveNew(day.id)}>Save</Button>
           </div>
         </Modal>

@@ -4,10 +4,13 @@ import {User} from '@/app/models/user';
 import connect from '@/app/utils/connection';
 import {v4 as uuid} from 'uuid';
 import {Habbit} from '@/app/types/types';
+import {Month} from '@/app/models/moths';
+import {Year} from '@/app/models/year';
 
 export const POST = async (req: NextRequest) => {
   try {
-    const {email} = await req.json();
+    const email = await req.json();
+    console.log(email);
     await connect();
     const user = await User.findOne({email: email});
     if (!user) {
@@ -22,6 +25,36 @@ export const POST = async (req: NextRequest) => {
     const day = await Day.findOne({date: formattedDate, user: email});
     if (day) {
       return new NextResponse('Day already exists', {status: 409});
+    }
+    const currentMonth = `${date.getMonth() + 1}/${date.getFullYear()}`;
+    const currentYear = `${date.getFullYear()}`;
+
+    const month = await Month.findOne({months: currentMonth, user: email});
+    const year = await Month.findOne({months: currentYear, user: email});
+
+    console.log(month, year);
+
+    if (!year || year.length === 0) {
+      const newYear = new Year({
+        year: currentYear,
+        user: email,
+      });
+      const savedYear = await newYear.save();
+      user.years = user.years.concat(savedYear._id);
+      await user.save();
+      if (!month || month.length === 0) {
+        const newMonth = new Month({
+          months: currentMonth,
+          user: email,
+        });
+        const savedMonth = await newMonth.save();
+        user.months = user.months.concat(savedMonth._id);
+        await user.save();
+        await Year.updateOne(
+          {year: currentYear, user: email},
+          {$push: {months: savedMonth._id}}
+        );
+      }
     }
 
     const Newday = new Day({
@@ -40,9 +73,18 @@ export const POST = async (req: NextRequest) => {
 
     user.days = user.days.concat(savedDay._id);
 
-    console.log(user);
+    console.log(savedDay);
 
     await user.save();
+
+    await Month.updateOne(
+      {months: currentMonth, user: email},
+      {$push: {days: savedDay._id}}
+    );
+    await Year.updateOne(
+      {year: currentYear, user: email},
+      {$push: {days: savedDay._id}}
+    );
 
     return new NextResponse('Day added', {status: 200});
   } catch (error) {

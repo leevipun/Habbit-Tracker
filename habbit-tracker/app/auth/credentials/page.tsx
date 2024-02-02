@@ -10,20 +10,25 @@ export default function SignIn() {
 
   const onFinish = async () => {
     try {
+      await addNewDay();
       await signIn('credentials', {
         email,
         password,
-        redirect: true,
         callbackUrl: '/',
-      });
-      await fetch('/api/habbits/addNewDay', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email: email}),
+        redirect: true,
       });
     } catch (error) {
       console.error('An error occurred:', error);
     }
+  };
+
+  const addNewDay = async () => {
+    console.log(email);
+    await fetch('/api/habbits/addNewDay', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(email),
+    });
   };
 
   return (

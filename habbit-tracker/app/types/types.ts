@@ -13,6 +13,9 @@ export interface Day {
 export interface UserTypes {
   id: string;
   email: string;
+  username: string;
+  passwordHash: string;
+  habits: Habbit[];
   days: Day[];
 }
 
