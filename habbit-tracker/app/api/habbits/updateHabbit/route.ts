@@ -1,14 +1,15 @@
 import {NextRequest, NextResponse} from 'next/server';
 import connect from '@/app/utils/connection';
 import {Day} from '@/app/models/day';
-import {Habbit} from '@/app/types/types';
+import {Habbit, UserHabbits} from '@/app/types/types';
+import {User} from '@/app/models/user';
 
 export const revalidate = true;
 
 export async function POST(req: NextRequest) {
   try {
     // Destructure the request body
-    const {id, Dayid} = await req.json();
+    const {id, Dayid, email, habbitName, habbitStatus} = await req.json();
 
     // Connect to the database
     await connect();
@@ -20,9 +21,6 @@ export async function POST(req: NextRequest) {
     if (!day) {
       return new NextResponse('Day not found', {status: 404});
     }
-
-    console.log(id, Dayid);
-
     // Update the status of the specified habit
     const updatedHabits = day.habbits.map((habit: Habbit) => {
       if (habit.id === id) {
@@ -32,20 +30,36 @@ export async function POST(req: NextRequest) {
       return habit;
     });
 
-    console.log(updatedHabits);
-
     const newDay = {
       habbits: updatedHabits,
     };
 
     // Save the updated day object
-    const updatedDay = await Day.findOneAndUpdate({id: Dayid}, newDay, {
+    await Day.findOneAndUpdate({id: Dayid}, newDay, {
       new: true,
     });
 
-    console.log(updatedDay);
+    const user = await User.findOne({email: email});
 
-    // Respond with a success message
+    if (!user) {
+      return new NextResponse('User not found', {status: 404});
+    }
+
+    const updateUserHabbits = user.habits.map((habit: UserHabbits) => {
+      if (habit.name === habbitName) {
+        if (habbitStatus) {
+          habit.done = habit.done + 1;
+        } else {
+          habit.done = habit.done - 1;
+        }
+      }
+      return habit;
+    });
+
+    console.log(updateUserHabbits);
+
+    await User.findOneAndUpdate({email: email}, {habits: updateUserHabbits});
+
     return new NextResponse('Habit updated', {status: 200});
   } catch (error) {
     console.error(error);

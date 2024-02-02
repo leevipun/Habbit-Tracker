@@ -3,10 +3,8 @@
 import React, {useState} from 'react';
 import {Button, Form, Input} from 'antd';
 import {signIn} from 'next-auth/react';
-import {useRouter} from 'next/navigation';
 
 export default function SignIn() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

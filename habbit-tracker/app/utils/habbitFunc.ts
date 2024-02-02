@@ -1,10 +1,10 @@
 import {NextResponse} from 'next/server';
-import {Habbit} from '../types/types';
+import {UserHabbits} from '../types/types';
 
 interface SignUp {
   email: string;
   password: string;
-  habits: Habbit[];
+  habits: UserHabbits[];
 }
 
 interface getData {

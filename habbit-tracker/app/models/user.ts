@@ -6,12 +6,28 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  username: {
+    type: String,
+    required: true,
+  },
   passwordHash: {
     type: String,
     required: true,
   },
   habits: {
     type: Array,
+    required: false,
+  },
+  lastActive: {
+    type: String,
+    required: false,
+  },
+  created: {
+    type: String,
+    required: false,
+  },
+  Streak: {
+    type: Number,
     required: false,
   },
   days: [

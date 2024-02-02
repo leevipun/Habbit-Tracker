@@ -4,13 +4,15 @@ import {User} from '@/app/models/user';
 import {NextRequest, NextResponse} from 'next/server';
 
 export const POST = async (req: NextRequest) => {
-  const {email, password, habits} = await req.json();
+  const {email, username, password, habits} = await req.json();
   console.log(email, password, habits);
   await connect();
   const passwordHash = await bcrypt.hash(password, 15);
   const newUser = new User({
     email: email,
+    username: username,
     passwordHash: passwordHash,
+    created: new Date().toLocaleDateString().replaceAll('.', '/'),
     habits: habits,
   });
   try {

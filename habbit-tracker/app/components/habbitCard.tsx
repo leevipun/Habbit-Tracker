@@ -1,34 +1,68 @@
 'use client';
 
 import React, {useState} from 'react';
-import {Checkbox, Input, Button} from 'antd';
+import {Checkbox, Input, Button, Modal} from 'antd';
 import {Day} from '../types/types';
 import {useSession} from 'next-auth/react';
 import {redirect} from 'next/navigation';
-import {User} from '@/app/models/user';
 
 interface HabbitCardProps {
   day: Day;
-  handleCheckBoxChange: (id: string, dayId: string) => void;
+  handleCheckBoxChange: (
+    id: string,
+    dayId: string,
+    updateHabbitName: string
+  ) => void;
 }
 
 const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
   const [habbitName, setHabbitName] = useState<string>('');
   const [edit, setEdit] = useState<boolean>(false);
   const [editId, setEditId] = useState<string>();
+  const [showmodal, setShowModal] = useState<boolean>(false);
   const [editPast, setEditPast] = useState<boolean>(false);
+  const [addToEveryday, setAddToEveryday] = useState<boolean>(false);
   const date = new Date();
   const today = `${date.getDate()}/${
     date.getMonth() + 1
   }/${date.getFullYear()}`;
 
-  console.log(day);
-
-  const mappedHabbits = day.habbits.map((habit) => {
-    console.log(habit);
+  const {data: session} = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect('/api/auth/signin?callbackUrl=/');
+    },
   });
 
-  mappedHabbits;
+  const handleModalCancel = (dayId: string) => {
+    setHabbitName('');
+    setAddToEveryday(false);
+    setEdit(false);
+    setEditId(undefined);
+    setShowModal(false);
+  };
+
+  const saveNew = async (dayId: string) => {
+    try {
+      console.log(editId, habbitName, addToEveryday, session?.user?.email);
+      await fetch('/api/habbits/addNewHabbit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          Dayid: dayId,
+          email: session?.user?.email,
+          name: habbitName,
+          addToEveryday: addToEveryday,
+        }),
+      });
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+
+  const modal = (dayId: string) => {
+    setShowModal(true);
+  };
 
   const handleEdit = (id: string) => {
     setEditId(id);
@@ -67,7 +101,9 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
                 <Checkbox
                   disabled={day.date !== today ? !editPast : false}
                   checked={habit.status}
-                  onChange={() => handleCheckBoxChange(habit.id, day.id)}
+                  onChange={() =>
+                    handleCheckBoxChange(habit.id, day.id, habit.name)
+                  }
                 >
                   {habit.name}
                 </Checkbox>
@@ -83,16 +119,44 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
           )
         ) : null}
         {day.date === today && !edit ? (
-          <Button onClick={() => handleEdit(day.id)} type='dashed'>
+          <Button onClick={() => modal(day.id)} type='dashed'>
             Add new Habbit
           </Button>
         ) : null}
         <div>
-          {`Percentage of completed habbits: ${(
+          Completion percentage is{' '}
+          {(
             (day.habbits.filter((h) => h.status).length / day.habbits.length) *
             100
-          ).toFixed(1)} `}
+          ).toFixed(1)}
+          %
         </div>
+
+        <Modal
+          title='Add new Habbit'
+          visible={showmodal}
+          onCancel={() => handleModalCancel(day.id)}
+          footer={null}
+        >
+          <div>
+            <label htmlFor='habbitName'>Habbit Name</label>
+            <Input
+              id='habbitName'
+              value={habbitName}
+              onChange={(e) => setHabbitName(e.target.value)}
+            />
+            <Checkbox
+              defaultChecked={addToEveryday}
+              onChange={(e) => setAddToEveryday(e.target.checked)}
+            >
+              Add to everyday
+            </Checkbox>
+          </div>
+          <div>
+            <Button onClick={() => handleModalCancel(day.id)}>Cancel</Button>
+            <Button onClick={() => saveNew(day.id)}>Save</Button>
+          </div>
+        </Modal>
       </div>
     </div>
   );
