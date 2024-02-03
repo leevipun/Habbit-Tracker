@@ -5,17 +5,21 @@ const yearSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  months: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Month',
-  },
+  months: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Month',
+    },
+  ],
   user: {
     type: String,
   },
-  days: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Day',
-  },
+  days: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Day',
+    },
+  ],
 });
 
 const Year = mongoose.models.Year || mongoose.model('Year', yearSchema);

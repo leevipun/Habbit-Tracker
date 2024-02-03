@@ -8,10 +8,12 @@ const monthSchema = new mongoose.Schema({
   user: {
     type: String,
   },
-  days: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Day',
-  },
+  days: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Day',
+    },
+  ],
 });
 
 const Month = mongoose.models.Month || mongoose.model('Month', monthSchema);

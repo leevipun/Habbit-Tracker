@@ -82,7 +82,7 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
     <div>
       <div
         key={day.id}
-        className=' bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'
+        className='shadow-md rounded px-8 pt-6 pb-8 mb-4 bg-[#A7D1D2] text-[#033540]'
       >
         <p>{day.date}</p>
         {edit && day.id?.toString() === editId?.toString() ? (
@@ -99,7 +99,7 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
             {day.habbits.map((habit) => (
               <div key={habit.name}>
                 <Checkbox
-                  disabled={day.date !== today ? !editPast : false}
+                  className='text-[#033540] mb-2'
                   checked={habit.status}
                   onChange={() =>
                     handleCheckBoxChange(habit.id, day.id, habit.name)
@@ -111,13 +111,6 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
             ))}
           </div>
         )}
-        {!edit && day.date !== today ? (
-          editPast ? (
-            <Button onClick={() => setEditPast(false)}>Save</Button>
-          ) : (
-            <Button onClick={() => setEditPast(true)}>Edit</Button>
-          )
-        ) : null}
         {day.date === today && !edit ? (
           <Button onClick={() => modal(day.id)} type='dashed'>
             Add new Habbit
@@ -134,7 +127,7 @@ const HabbitCard = ({day, handleCheckBoxChange}: HabbitCardProps) => {
 
         <Modal
           title='Add new Habbit'
-          visible={showmodal}
+          open={showmodal}
           onCancel={() => handleModalCancel()}
           footer={null}
         >

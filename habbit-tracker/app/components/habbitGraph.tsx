@@ -22,40 +22,22 @@ const HabbitGraph = ({user}: {user: UserHabbits[]}) => {
   const secondDomain = [0, 0];
 
   return (
-    <>
-      <div style={{width: '100%', height: '50%'}}>
-        <ResponsiveContainer width='100%' height='100%'>
-          <RadarChart cx='50%' cy='50%' outerRadius='60%' data={user}>
-            <PolarGrid />
-            <PolarAngleAxis dataKey='name' />
-            <PolarRadiusAxis domain={domain} />
-            <Radar
-              name='Mike'
-              dataKey='done'
-              stroke='#8884d8'
-              fill='#8884d8'
-              fillOpacity={0.6}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
-      </div>
-      <div style={{width: '100%', height: '50%'}}>
-        <ResponsiveContainer width='100%' height='100%'>
-          <RadarChart cx='50%' cy='50%' outerRadius='60%' data={user}>
-            <PolarGrid />
-            <PolarAngleAxis dataKey='name' />
-            <PolarRadiusAxis domain={domain} />
-            <Radar
-              name='Mike'
-              dataKey='done'
-              stroke='#8884d8'
-              fill='#8884d8'
-              fillOpacity={0.6}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
-      </div>
-    </>
+    <div style={{width: '100%', height: '50%'}}>
+      <ResponsiveContainer width='100%' height='100%'>
+        <RadarChart cx='50%' cy='50%' outerRadius='60%' data={user}>
+          <PolarGrid />
+          <PolarAngleAxis dataKey='name' stroke='#E0F4F5' />
+          <PolarRadiusAxis domain={domain} stroke='#E0F4F5' />
+          <Radar
+            name='Mike'
+            dataKey='done'
+            stroke='#015366'
+            fill='#015366'
+            fillOpacity={0.6}
+          />
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

@@ -9,7 +9,8 @@ import {Year} from '@/app/models/year';
 
 export const POST = async (req: NextRequest) => {
   try {
-    const email = await req.json();
+    const body = await req.json();
+    const email = body.toString();
     console.log(email);
     await connect();
     const user = await User.findOne({email: email});

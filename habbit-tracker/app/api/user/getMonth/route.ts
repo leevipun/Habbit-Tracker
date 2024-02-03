@@ -22,5 +22,7 @@ export async function POST(req: NextRequest) {
     })
   );
 
+  console.log(months.map((month) => month.months));
+
   return new NextResponse(JSON.stringify(months), {status: 200});
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useState, useEffect} from 'react';
-import {Button, Modal, Spin} from 'antd';
+import {Button, Modal, Select, Spin} from 'antd';
 import {Day, Habbit} from './types/types';
 import HabbitCard from './components/habbitCard';
 import {useSession} from 'next-auth/react';
@@ -28,20 +28,22 @@ const Habbits = () => {
     },
   });
   const [firstHasRun, setFirstHasRun] = useState<boolean>(false);
+  const [email, setEmail] = useState<string | null | undefined>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState<any>(null);
   const [habbits, setHabbits] = useState<UserHabbits[]>([]);
   const [showedDays, setShowedDays] = useState<Day[]>([]);
-  const [days, setDays] = useState<Day[]>([]);
+  const [days, setDays] = useState<Day[] | undefined>([]);
   const [visibleData, setVisibleData] = useState<number>(6);
   const TotalRows = Math.ceil(days?.length ?? 0 / 6);
 
   const handleNewDay = async () => {
     try {
+      console.log(email);
       await fetch('/api/habbits/addNewDay', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(session?.user?.email),
+        body: JSON.stringify(email),
       });
       const response = await fetch('/api/habbits/', {
         method: 'POST',
@@ -64,10 +66,15 @@ const Habbits = () => {
 
   useEffect(() => {
     const checkToday = () => {
-      console.log('täällä');
-      console.log(days);
+      console.log('Checking today');
       const currentDate = new Date().toLocaleDateString().replaceAll('.', '/');
-      if (days?.map((day) => day.date.toString().includes(currentDate))) {
+      console.log('Current date:', currentDate);
+      if (!session || days === undefined) {
+        console.log('No session');
+        return;
+      }
+      if (days?.map((day) => day.date.includes(currentDate))[0]) {
+        console.log('Today already added');
         return;
       } else {
         Modal.info({
@@ -114,8 +121,12 @@ const Habbits = () => {
         body: JSON.stringify({email: session?.user?.email}),
       });
       const data = await response.json();
+      if (data.length === 0) {
+        setDays([]);
+      }
       console.log(data);
       setDays(data);
+      setEmail(session?.user?.email);
     };
     const fetchUserHabbits = async () => {
       const response = await fetch('/api/user/', {
@@ -142,6 +153,9 @@ const Habbits = () => {
     updateHabbitName: string
   ) {
     try {
+      if (days === undefined) {
+        return;
+      }
       const updatedHabits = days.map((day: Day) => {
         const updatedHabits = day.habbits.map((habit: Habbit) => {
           if (habit.id === id) {
@@ -191,17 +205,74 @@ const Habbits = () => {
   }
 
   const renderRows = () => {
-    const visibleDays = days?.slice(0, visibleData).reverse();
-    return visibleDays?.map((day) => (
-      <div key={day.id} className='w-1/5 min-w-1/5 min-h-80 max-h-300 p-4'>
-        <HabbitCard day={day} handleCheckBoxChange={handleCheckBoxChange} />
-      </div>
-    ));
+    console.log(days);
+    if (days === undefined) {
+      return (
+        <div className='flex justify-center items-center w-full h-80'>
+          No Habbits to display
+        </div>
+      );
+    } else {
+      const visibleDays = days?.slice(0, visibleData).reverse();
+      return visibleDays?.map((day) => (
+        <div key={day.id} className='w-1/5 min-w-1/5 min-h-80 max-h-300 p-4 '>
+          <HabbitCard day={day} handleCheckBoxChange={handleCheckBoxChange} />
+        </div>
+      ));
+    }
+  };
+
+  const thisYear = new Date().getFullYear();
+
+  const selectOptions = [
+    {label: 'Last year', value: 'lastYear'},
+    {label: 'This year', value: 'thisYear'},
+    {label: `January ${thisYear}`, value: 1},
+    {label: `February ${thisYear}`, value: 2},
+    {label: `March ${thisYear}`, value: 3},
+    {label: `April ${thisYear}`, value: 4},
+    {label: `May ${thisYear}`, value: 5},
+    {label: `June ${thisYear}`, value: 6},
+    {label: `July ${thisYear}`, value: 7},
+    {label: `August ${thisYear}`, value: 8},
+    {label: `September ${thisYear}`, value: 9},
+    {label: `October ${thisYear}`, value: 10},
+    {label: `November ${thisYear}`, value: 11},
+    {label: `December ${thisYear}`, value: 12},
+  ];
+
+  const handleNewRender = async (value: string | number) => {
+    try {
+      const response = await fetch('/api/habbits/filter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email: session?.user?.email, value: value}),
+      });
+      if (response.status === 200) {
+        const days = await response.json();
+        setDays(days);
+      } else {
+        setDays(undefined);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
   };
 
   return (
-    <div>
+    <div className='bg-[#63898C] min-h-screen'>
       <Navbar user={user} />
+      <div className='align-center justify-center flex'>
+        <Select
+          className='w-1/6'
+          defaultValue={'thisYear'}
+          onChange={(value) => handleNewRender(value)}
+          dropdownStyle={{backgroundColor: '#A7D1D2'}}
+          options={selectOptions}
+        />
+      </div>
       <div className='flex'>
         <div className='w-2/3'>
           <div className='flex flex-wrap h-1/3 min-h-[500px] max-h-[500px] overflow-y-scroll'>
