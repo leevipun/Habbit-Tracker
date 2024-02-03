@@ -31,40 +31,58 @@ export default function SignIn() {
     });
   };
 
-  return (
-    <div>
-      <h1>Sign In</h1>
-      <Form
-        name='dynamic-form'
-        labelCol={{span: 8}}
-        wrapperCol={{span: 16}}
-        autoComplete='off'
-        onFinish={onFinish}
-      >
-        <Form.Item
-          label='Email'
-          name='email'
-          rules={[{required: true, message: 'Please input your email!'}]}
-        >
-          <Input onChange={(e) => setEmail(e.target.value)} value={email} />
-        </Form.Item>
+  const handleNewAccount = () => {
+    window.location.href = '/signup';
+  };
 
-        <Form.Item
-          label='Password'
-          name='password'
-          rules={[{required: true, message: 'Please input your password!'}]}
+  return (
+    <div className='flex justify-center items-center bg-[#63898C] min-h-screen'>
+      <div className='w-full sm:w-1/3 p-8'>
+        <h1 className='text-4xl font-bold mb-8'>Sign In</h1>
+
+        <Form
+          name='dynamic-form'
+          labelCol={{span: 8}}
+          wrapperCol={{span: 16}}
+          autoComplete='on'
+          onFinish={onFinish}
+          className='bg-[#A7D1D2] text-[#033540] backdrop-blur  shadow-md rounded px-8 pt-6 pb-8 mb-8'
         >
-          <Input.Password
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button type='primary' htmlType='submit'>
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label='Email'
+            name='email'
+            rules={[{required: true, message: 'Please input your email!'}]}
+            className='mb-4'
+          >
+            <Input
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              className='w-full px-3 py-2 border rounded'
+            />
+          </Form.Item>
+
+          <Form.Item
+            label='Password'
+            name='password'
+            rules={[{required: true, message: 'Please input your password!'}]}
+            className='mb-4'
+          >
+            <Input.Password
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              className='w-full px-3 py-2 border rounded'
+            />
+          </Form.Item>
+          <Form.Item className='justify-space'>
+            <Button htmlType='submit' className='mr-4'>
+              Sign In
+            </Button>
+            <Button onClick={() => handleNewAccount()}>
+              Create an account
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 }

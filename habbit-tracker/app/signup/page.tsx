@@ -140,7 +140,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className='flex justify-center items-center h-screen'>
+    <div className='flex justify-center items-center bg-[#63898C] min-h-screen'>
       <div className='w-full sm:w-1/3 p-8'>
         <h1 className='text-4xl font-bold mb-8'>Sign Up</h1>
 
@@ -151,7 +151,7 @@ const SignUpPage = () => {
             wrapperCol={{span: 16}}
             autoComplete='off'
             onFinish={onFinish}
-            className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-8'
+            className='bg-[#A7D1D2] text-[#033540] backdrop-blur  shadow-md rounded px-8 pt-6 pb-8 mb-8'
           >
             <Form.Item>
               <Radio.Group
@@ -178,9 +178,9 @@ const SignUpPage = () => {
             name='dynamic-form'
             labelCol={{span: 8}}
             wrapperCol={{span: 16}}
-            autoComplete='off'
+            autoComplete='on'
             onFinish={onFinish}
-            className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-8'
+            className='bg-[#A7D1D2] text-[#033540] backdrop-blur  shadow-md rounded px-8 pt-6 pb-8 mb-8'
           >
             <Form.Item
               label='Email'
