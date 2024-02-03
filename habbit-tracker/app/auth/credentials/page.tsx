@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import {Button, Form, Input} from 'antd';
 import {signIn} from 'next-auth/react';
 
-export default function SignIn() {
+export default function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
