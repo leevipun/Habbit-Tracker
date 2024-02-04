@@ -24,11 +24,12 @@ export default function LogIn() {
 
   const addNewDay = async () => {
     console.log(email);
-    await fetch('/api/habbits/addNewDay', {
+    const response = await fetch('/api/habbits/addNewDay', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(email),
     });
+    console.log(response);
   };
 
   const handleNewAccount = () => {

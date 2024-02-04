@@ -10,15 +10,6 @@ import Graph from './components/graph';
 import HabbitGraph from './components/habbitGraph';
 import {UserHabbits} from '@/app/types/types';
 import Navbar from './components/Navbar';
-import {set} from 'mongoose';
-
-interface User {
-  _id: string;
-  email: string;
-  passwordHash: string;
-  habits: Array<any>;
-  days: Day[];
-}
 
 const Habbits = () => {
   const {data: session} = useSession({
@@ -27,7 +18,6 @@ const Habbits = () => {
       redirect('/api/auth/signin?callbackUrl=/');
     },
   });
-  const [firstHasRun, setFirstHasRun] = useState<boolean>(false);
   const [email, setEmail] = useState<string | null | undefined>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState<any>(null);
@@ -53,7 +43,7 @@ const Habbits = () => {
         body: JSON.stringify({email: session?.user?.email}),
       });
       const data = await response.json();
-      setDays(data.reverce());
+      setDays(data);
       Modal.destroyAll();
     } catch (error) {
       console.error('Error adding new day:', error);
@@ -66,14 +56,13 @@ const Habbits = () => {
 
   useEffect(() => {
     const checkToday = () => {
-      console.log('Checking today');
       const currentDate = new Date().toLocaleDateString().replaceAll('.', '/');
-      console.log('Current date:', currentDate);
+      const isToday = days?.map((day) => day.date.includes(currentDate));
       if (!session || days === undefined) {
         console.log('No session');
         return;
       }
-      if (days?.map((day) => day.date.includes(currentDate))[0]) {
+      if (isToday?.includes(true)) {
         console.log('Today already added');
         return;
       } else {
