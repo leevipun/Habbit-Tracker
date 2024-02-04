@@ -6,9 +6,12 @@ import {UserHabbits} from '../types/types';
 import {v4 as uuid} from 'uuid';
 import {signUp} from '../utils/habbitFunc';
 import {useRouter} from 'next/navigation';
+import {Spin} from 'antd';
+import {LoadingOutlined} from '@ant-design/icons';
 
 const SignUpPage = () => {
   const [email, setEmail] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
   const [username, setUserName] = useState<string>('');
   const [showHabbits, setShowHabbits] = useState<boolean>(false);
@@ -35,6 +38,8 @@ const SignUpPage = () => {
   console.log('Days remaining:', daysRemaining);
 
   const onFinish = async (values: any) => {
+    setLoading(true);
+
     let newHabits: UserHabbits[] = [];
 
     if (radioValue === 'S') {
@@ -71,6 +76,8 @@ const SignUpPage = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -225,6 +232,10 @@ const SignUpPage = () => {
           </Form>
         )}
       </div>
+      <Spin
+        spinning={loading}
+        indicator={<LoadingOutlined style={{fontSize: 24}} spin />}
+      />
     </div>
   );
 };

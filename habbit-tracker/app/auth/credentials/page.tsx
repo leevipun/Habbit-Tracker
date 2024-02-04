@@ -1,14 +1,17 @@
 'use client';
 
 import React, {useState} from 'react';
-import {Button, Form, Input} from 'antd';
+import {Button, Form, Input, Spin} from 'antd';
 import {signIn} from 'next-auth/react';
+import {LoadingOutlined} from '@ant-design/icons';
 
 export default function LogIn() {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const onFinish = async () => {
+    setLoading(true);
     try {
       await addNewDay();
       await signIn('credentials', {
@@ -19,6 +22,8 @@ export default function LogIn() {
       });
     } catch (error) {
       console.error('An error occurred:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,6 +89,10 @@ export default function LogIn() {
           </Form.Item>
         </Form>
       </div>
+      <Spin
+        spinning={loading}
+        indicator={<LoadingOutlined style={{fontSize: 24}} spin />}
+      />
     </div>
   );
 }

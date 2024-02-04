@@ -10,6 +10,7 @@ import Graph from './components/graph';
 import HabbitGraph from './components/habbitGraph';
 import {UserHabbits} from '@/app/types/types';
 import Navbar from './components/Navbar';
+import {LoadingOutlined} from '@ant-design/icons';
 
 const Habbits = () => {
   const {data: session} = useSession({
@@ -28,6 +29,7 @@ const Habbits = () => {
   const TotalRows = Math.ceil(days?.length ?? 0 / 6);
 
   const handleNewDay = async () => {
+    setLoading(true);
     try {
       console.log(email);
       await fetch('/api/habbits/addNewDay', {
@@ -47,6 +49,8 @@ const Habbits = () => {
       Modal.destroyAll();
     } catch (error) {
       console.error('Error adding new day:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,6 +60,7 @@ const Habbits = () => {
 
   useEffect(() => {
     const checkToday = () => {
+      setLoading(true);
       const currentDate = new Date().toLocaleDateString().replaceAll('.', '/');
       const isToday = days?.map((day) => day.date.includes(currentDate));
       if (!session || days === undefined) {
@@ -66,20 +71,26 @@ const Habbits = () => {
         console.log('Today already added');
         return;
       } else {
-        Modal.info({
-          title: 'Add new day',
-          footer: null,
-          content: (
-            <div>
-              <p>It seems you haven&apost added a new day yet.</p>
-              <p>Click the button below to add a new day</p>
+        try {
+          Modal.info({
+            title: 'Add new day',
+            footer: null,
+            content: (
               <div>
-                <Button onClick={handleNewDay}>Add new day</Button>
-                <Button onClick={handleModalCancel}>Cancel</Button>
+                <p>It seems you haven&apost added a new day yet.</p>
+                <p>Click the button below to add a new day</p>
+                <div>
+                  <Button onClick={handleNewDay}>Add new day</Button>
+                  <Button onClick={handleModalCancel}>Cancel</Button>
+                </div>
               </div>
-            </div>
-          ),
-        });
+            ),
+          });
+        } catch (error) {
+          console.error('Error displaying modal:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
     checkToday();
@@ -102,32 +113,44 @@ const Habbits = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/api/habbits/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email: session?.user?.email}),
-      });
-      const data = await response.json();
-      if (data.length === 0) {
-        setDays([]);
+      setLoading(true);
+      try {
+        const response = await fetch('/api/habbits/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({email: session?.user?.email}),
+        });
+        const data = await response.json();
+        if (data.length === 0) {
+          setDays([]);
+        }
+        console.log(data);
+        setDays(data);
+        setEmail(session?.user?.email);
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-      console.log(data);
-      setDays(data);
-      setEmail(session?.user?.email);
     };
+
     const fetchUserHabbits = async () => {
-      const response = await fetch('/api/user/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email: session?.user?.email}),
-      });
-      const data = await response.json();
-      setUser(data);
-      setHabbits(data.habits);
+      try {
+        const response = await fetch('/api/user/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({email: session?.user?.email}),
+        });
+        const data = await response.json();
+        setUser(data);
+        setHabbits(data.habits);
+      } catch (error) {
+        console.error('Error fetching user habits:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchUserHabbits();
 
@@ -141,6 +164,7 @@ const Habbits = () => {
     Dayid: string,
     updateHabbitName: string
   ) {
+    setLoading(true);
     try {
       if (days === undefined) {
         return;
@@ -190,6 +214,8 @@ const Habbits = () => {
       return null;
     } catch (error) {
       console.error('An error occurred:', error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -291,7 +317,10 @@ const Habbits = () => {
           <HabbitGraph user={habbits} />
         </div>
       </div>
-      <Spin spinning={loading} />
+      <Spin
+        spinning={loading}
+        indicator={<LoadingOutlined style={{fontSize: 24}} spin />}
+      />
     </div>
   );
 };
