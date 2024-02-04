@@ -65,6 +65,7 @@ const Habbits = () => {
       const isToday = days?.map((day) => day.date.includes(currentDate));
       if (!session || days === undefined) {
         console.log('No session');
+        setLoading(false);
         return;
       }
       if (isToday?.includes(true)) {
