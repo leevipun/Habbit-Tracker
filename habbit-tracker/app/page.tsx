@@ -69,6 +69,7 @@ const Habbits = () => {
       }
       if (isToday?.includes(true)) {
         console.log('Today already added');
+        setLoading(false);
         return;
       } else {
         try {
