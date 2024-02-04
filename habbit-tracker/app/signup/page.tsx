@@ -72,7 +72,7 @@ const SignUpPage = () => {
       if (!response || !response.ok) throw new Error('Something went wrong');
 
       if (response.status === 200) {
-        router.push('/login');
+        router.push('/auth/credentials');
       }
     } catch (error) {
       console.log(error);
