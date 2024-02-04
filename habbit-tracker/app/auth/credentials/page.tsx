@@ -92,6 +92,7 @@ export default function LogIn() {
       <Spin
         spinning={loading}
         indicator={<LoadingOutlined style={{fontSize: 24}} spin />}
+        fullscreen
       />
     </div>
   );
