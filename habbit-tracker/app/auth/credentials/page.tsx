@@ -44,7 +44,7 @@ export default function LogIn() {
   return (
     <div className='flex justify-center items-center bg-[#63898C] min-h-screen'>
       <div className='w-full sm:w-1/3 p-8'>
-        <h1 className='text-4xl font-bold mb-8'>Sign In</h1>
+        <h1 className='text-4xl font-bold mb-8'>Log In</h1>
 
         <Form
           name='dynamic-form'

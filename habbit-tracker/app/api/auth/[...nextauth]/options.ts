@@ -15,7 +15,10 @@ export const options: NextAuthOptions = {
       },
       async authorize(credentials) {
         await connect();
-        const user = await User.findOne({email: credentials?.email});
+        const user = await User.findOne({
+          $or: [{email: credentials?.email}, {username: credentials?.email}],
+        });
+
         if (user) {
           if (!credentials?.password) {
             return new NextResponse('Password incorrect', {status: 401});
