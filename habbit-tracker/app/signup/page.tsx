@@ -8,6 +8,7 @@ import {signUp} from '../utils/habbitFunc';
 import {useRouter} from 'next/navigation';
 import {Spin} from 'antd';
 import {LoadingOutlined} from '@ant-design/icons';
+import Notification from './../components/notification';
 
 const SignUpPage = () => {
   const [email, setEmail] = useState<string>('');
@@ -18,6 +19,9 @@ const SignUpPage = () => {
   const [numInputs, setNumInputs] = useState<number>(1);
   const [habits, setHabits] = useState<UserHabbits[]>([]);
   const [radioValue, setRadioValue] = useState('S');
+  const [visible, setVisible] = useState<boolean>(false);
+  const [type, setType] = useState<string>('');
+  const [notification, setNotification] = useState<string>('');
 
   const onNumInputsChange = (value: number) => {
     setNumInputs(value);
@@ -69,10 +73,16 @@ const SignUpPage = () => {
     try {
       const response = await signUp(signUpData);
       console.log(response);
-      if (!response || !response.ok) throw new Error('Something went wrong');
-
-      if (response.status === 200) {
-        router.push('/auth/credentials');
+      if (response) {
+        console.log(await response.text());
+        if (response.status !== 200) {
+          const data = await response.text();
+          setNotification(data);
+          setVisible(true);
+          setType('error');
+        } /*else if (response.status === 200) {
+          router.push('/auth/credentials');
+        }*/
       }
     } catch (error) {
       console.log(error);
@@ -237,6 +247,7 @@ const SignUpPage = () => {
         indicator={<LoadingOutlined style={{fontSize: 24}} spin />}
         fullscreen
       />
+      <Notification text={notification} type={type} visible={visible} />
     </div>
   );
 };

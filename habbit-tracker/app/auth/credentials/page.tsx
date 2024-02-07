@@ -10,11 +10,12 @@ export default function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+
   const onFinish = async () => {
     setLoading(true);
     try {
       await addNewDay();
-      await signIn('credentials', {
+      const response = await signIn('credentials', {
         email,
         password,
         callbackUrl: '/',
@@ -28,13 +29,11 @@ export default function LogIn() {
   };
 
   const addNewDay = async () => {
-    console.log(email);
     const response = await fetch('/api/habbits/addNewDay', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(email),
     });
-    console.log(response);
   };
 
   const handleNewAccount = () => {

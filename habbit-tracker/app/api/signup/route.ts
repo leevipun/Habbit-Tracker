@@ -4,24 +4,40 @@ import {User} from '@/app/models/user';
 import {NextRequest, NextResponse} from 'next/server';
 
 export const POST = async (req: NextRequest) => {
-  const {email, username, password, habits} = await req.json();
-  console.log(email, password, habits);
-  await connect();
-  const passwordHash = await bcrypt.hash(password, 15);
-  const newUser = new User({
-    email: email,
-    username: username,
-    passwordHash: passwordHash,
-    created: new Date().toLocaleDateString().replaceAll('.', '/'),
-    habits: habits,
-  });
   try {
-    await newUser.save();
-    console.log(newUser);
-    return new NextResponse('New User Added succesfully', {
-      status: 200,
+    const {email, username, password, habits} = await req.json();
+    console.log(email, password, habits);
+
+    await connect(); // Make sure this function is defined correctly
+
+    const passwordHash = await bcrypt.hash(password, 15);
+
+    const existingUser = await User.findOne({
+      $or: [{email: email}, {username: username}],
     });
-  } catch (error) {
-    return new NextResponse('User creation failed', {});
+
+    if (existingUser) {
+      console.log('User already exists');
+      return new NextResponse('User already exists', {status: 400});
+    } else {
+      console.log('Creating new user');
+      const newUser = new User({
+        email: email,
+        username: username,
+        passwordHash: passwordHash,
+        created: new Date().toLocaleDateString().replaceAll('.', '/'),
+        habits: habits,
+      });
+
+      await newUser.save();
+      console.log(newUser);
+
+      return new NextResponse('New User Added successfully', {
+        status: 200,
+      });
+    }
+  } catch (error: any) {
+    console.error('Error during user creation:', error.message);
+    return new NextResponse('Error during user creation', {status: 500});
   }
 };

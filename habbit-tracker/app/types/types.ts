@@ -11,7 +11,7 @@ export interface Day {
 }
 
 export interface UserTypes {
-  id: string;
+  _id: string;
   email: string;
   username: string;
   passwordHash: string;

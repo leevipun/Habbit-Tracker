@@ -9,6 +9,11 @@ const Navbar = (user: NavbarProps) => {
   const handleLogout = async () => {
     window.location.href = '/api/auth/signout';
   };
+
+  const handleRedirectUserPage = () => {
+    window.location.href = `/user/${user?.user?._id}`;
+  };
+
   return (
     <nav className='navbar'>
       <div className='links text-[#E0F4F5]'>
@@ -21,7 +26,10 @@ const Navbar = (user: NavbarProps) => {
           </li>
           {user ? (
             <>
-              <li className='m-5'>
+              <li
+                className='m-5 cursor-pointer'
+                onClick={handleRedirectUserPage}
+              >
                 <a>Hello, {user?.user?.username}</a>
               </li>
               <li className='m-5 cursor-pointer' onClick={handleLogout}>
