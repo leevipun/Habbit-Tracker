@@ -61,14 +61,16 @@ const Habbits = () => {
   useEffect(() => {
     const checkToday = () => {
       setLoading(true);
-      const currentDate = new Date().toLocaleDateString().replaceAll('.', '/');
+      const currentDate = new Date().toLocaleDateString('FI').replaceAll('.', '/');
+      console.log(currentDate)
+      console.log(days?.map((day) => day.date.includes(currentDate)))
       const isToday = days?.map((day) => day.date.includes(currentDate));
       if (!session || days === undefined) {
         console.log('No session');
         setLoading(false);
         return;
       }
-      if (isToday?.includes(true)) {
+      if (isToday!.includes(true)) {
         console.log('Today already added');
         setLoading(false);
         return;
