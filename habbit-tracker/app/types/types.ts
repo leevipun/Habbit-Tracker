@@ -2,6 +2,7 @@ export interface Habbit {
   id: string;
   name: string;
   status: boolean;
+  done: number;
 }
 
 export interface Day {
@@ -11,6 +12,7 @@ export interface Day {
 }
 
 export interface UserTypes {
+  streak: string;
   _id: string;
   email: string;
   username: string;

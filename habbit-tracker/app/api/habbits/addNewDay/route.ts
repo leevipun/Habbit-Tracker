@@ -15,6 +15,7 @@ export const POST = async (req: NextRequest) => {
     await connect();
     const user = await User.findOne({email: email});
     if (!user) {
+      console.log('User not found');
       return new NextResponse('User not found', {status: 404});
     }
 
@@ -25,6 +26,7 @@ export const POST = async (req: NextRequest) => {
 
     const day = await Day.findOne({date: formattedDate, user: email});
     if (day) {
+      console.log('day is yes');
       return new NextResponse('Day already exists', {status: 409});
     }
     const currentMonth = `${date.getMonth() + 1}/${date.getFullYear()}`;

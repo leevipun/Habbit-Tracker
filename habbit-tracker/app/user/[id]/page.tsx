@@ -4,9 +4,18 @@ import Navbar from '@/app/components/Navbar';
 import {UserTypes} from '@/app/types/types';
 import {LoadingOutlined} from '@ant-design/icons';
 import {Spin, Button, Input} from 'antd';
-import {set} from 'mongoose';
 import {usePathname} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -15,6 +24,10 @@ export default function Page() {
   const [habbitName, setHabbitName] = useState<string>('');
 
   const pathname = usePathname();
+  const data = user?.habits.map((goal) => ({
+    name: goal.name,
+    completionPercentage: ((40 / 365) * 100).toFixed(0),
+  }));
 
   const fetchData = async () => {
     setLoading(true);
@@ -71,6 +84,13 @@ export default function Page() {
       />
       <div>
         <h2 className='text-2xl'>Hey, {user?.username}</h2>
+        <h3 className='text-xl'>Welcome to your page</h3>
+        <div className='bg-[#63898C] text-white shadow-lg rounded-lg p-4 mx-4 my-6 w-1/3'>
+          <p className='font-bold'>Congratulations!</p>
+          <p className='text-lg'>
+            You&#39;ve achieved a {user?.streak} day streak!
+          </p>
+        </div>
         <div className='bg-[#63898C] text-white shadow-lg p-2 rounded m-4 w-1/3'>
           {showHabits ? (
             <>
@@ -109,6 +129,28 @@ export default function Page() {
               </Button>
             </div>
           )}
+        </div>
+        <div className='bg-[#63898C] text-white shadow-lg p-2 rounded m-4 w-1/3'>
+          {user?.habits.map((goal) => (
+            <>
+              <ul key={1}>
+                <li key={goal.id}>
+                  You have completed habbit {goal.name} {goal.done} times its
+                  {((goal.done / 365) * 100).toFixed(0)} % of the year
+                </li>
+              </ul>
+            </>
+          ))}
+          <ResponsiveContainer width='100%' height={400}>
+            <BarChart data={data}>
+              <CartesianGrid />
+              <XAxis dataKey='name' tick={{fontSize: 12}} stroke='00457E' />
+              <YAxis tick={{fontSize: 12}} stroke='00457E' />
+              <Tooltip cursor={{fill: 'transparent'}} />
+              <Legend stroke='00457E' />
+              <Bar dataKey='completionPercentage' fill='#00457E' barSize={80} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
