@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest) => {
 
     console.log(month, year);
 
-    if (!year || year.length === 0) {
+    if (!year) {
       const newYear = new Year({
         year: currentYear,
         user: email,
@@ -43,7 +43,7 @@ export const POST = async (req: NextRequest) => {
       const savedYear = await newYear.save();
       user.years = user.years.concat(savedYear._id);
       await user.save();
-      if (!month || month.length === 0) {
+      if (!month) {
         const newMonth = new Month({
           months: currentMonth,
           user: email,

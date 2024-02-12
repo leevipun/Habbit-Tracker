@@ -56,7 +56,36 @@ export async function POST(req: NextRequest) {
       return habit;
     });
 
+    console.log(user.streak);
+
     console.log(updateUserHabbits);
+
+    const date = new Date();
+    const formattedDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    }/${date.getFullYear()}`;
+
+    if (user.lastActive !== formattedDate) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayFormatted = yesterday
+        .toLocaleDateString('FI')
+        .replaceAll('.', '/');
+
+      if (user.lastActive === yesterdayFormatted) {
+        await User.findOneAndUpdate(
+          {email: email},
+          {lastActive: formattedDate},
+          {streak: user.streak + 1}
+        );
+      } else {
+        await User.findOneAndUpdate(
+          {email: email},
+          {lastActive: formattedDate},
+          {streak: 1}
+        );
+      }
+    }
 
     await User.findOneAndUpdate({email: email}, {habits: updateUserHabbits});
 

@@ -1,5 +1,6 @@
 'use client';
 
+import Navbar from '@/app/components/Navbar';
 import {UserTypes} from '@/app/types/types';
 import {LoadingOutlined} from '@ant-design/icons';
 import {Spin, Button, Input} from 'antd';
@@ -15,34 +16,54 @@ export default function Page() {
 
   const pathname = usePathname();
 
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/user/${id}`, {
+        method: 'GET',
+      });
+      const data = await response.json();
+      console.log(data);
+      setUser(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveNewHabbit = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/habbits/addNewHabbit`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: habbitName,
+          addToEveryday: true,
+          email: user?.email,
+        }),
+      });
+      if (response.ok) {
+        await fetchData();
+        setHabbitName('');
+        setShowHabits(true);
+      }
+    } catch (error) {
+      console.error('Error saving new habbit:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const id = pathname.split('/').pop();
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/user/${id}`, {
-          method: 'GET',
-        });
-        const data = await response.json();
-        console.log(data);
-        setUser(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
-  const handleSave = async () => {
-    console.log(habbitName);
-    setShowHabits(true);
-  };
-
   return (
     <div className='bg-[#A7D1D2] min-h-screen'>
+      <Navbar user={user} />
       <Spin
         spinning={loading}
         indicator={<LoadingOutlined style={{fontSize: 24}} spin />}
@@ -76,14 +97,15 @@ export default function Page() {
             <div>
               <label>Name: </label>
               <Input
+                className='mr-2'
                 value={habbitName}
                 onChange={(e) => setHabbitName(e.target.value)}
               />
               <Button
                 className='m-2 text-white bg-[#806491]'
-                onClick={handleSave}
+                onClick={saveNewHabbit}
               >
-                Show Habits
+                Save new habbit
               </Button>
             </div>
           )}

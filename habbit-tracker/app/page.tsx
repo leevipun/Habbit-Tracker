@@ -25,8 +25,6 @@ const Habbits = () => {
   const [habbits, setHabbits] = useState<UserHabbits[]>([]);
   const [showedDays, setShowedDays] = useState<Day[]>([]);
   const [days, setDays] = useState<Day[] | undefined>([]);
-  const [visibleData, setVisibleData] = useState<number>(6);
-  const TotalRows = Math.ceil(days?.length ?? 0 / 6);
 
   const handleNewDay = async () => {
     setLoading(true);
@@ -61,9 +59,11 @@ const Habbits = () => {
   useEffect(() => {
     const checkToday = () => {
       setLoading(true);
-      const currentDate = new Date().toLocaleDateString('FI').replaceAll('.', '/');
-      console.log(currentDate)
-      console.log(days?.map((day) => day.date.includes(currentDate)))
+      const currentDate = new Date()
+        .toLocaleDateString('FI')
+        .replaceAll('.', '/');
+      console.log(currentDate);
+      console.log(days?.map((day) => day.date.includes(currentDate)));
       const isToday = days?.map((day) => day.date.includes(currentDate));
       if (!session || days === undefined) {
         console.log('No session');
@@ -99,21 +99,6 @@ const Habbits = () => {
     };
     checkToday();
   }, [days]);
-
-  const handleShowLess = () => {
-    if (visibleData === 6) {
-      return;
-    }
-    setVisibleData((prev) => prev - 6);
-  };
-
-  const handleSetVisibleDays = () => {
-    if (visibleData >= TotalRows * 6) {
-      return;
-    }
-    console.log('clicked');
-    setVisibleData((prev) => prev + 6);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -232,8 +217,9 @@ const Habbits = () => {
         </div>
       );
     } else {
-      const visibleDays = days?.slice(0, visibleData).reverse();
-      return visibleDays?.map((day) => (
+      const reverseDays = [...days].reverse();
+      console.log(reverseDays);
+      return reverseDays?.map((day) => (
         <div key={day.id} className='w-1/5 min-w-1/5 min-h-80 max-h-300 p-4 '>
           <HabbitCard day={day} handleCheckBoxChange={handleCheckBoxChange} />
         </div>
@@ -297,24 +283,7 @@ const Habbits = () => {
           <div className='flex flex-wrap h-1/3 min-h-[500px] max-h-[500px] overflow-y-scroll'>
             {renderRows()}
           </div>
-          <div className='flex justify-center'>
-            <div>
-              <Button
-                className='m-5'
-                disabled={visibleData >= TotalRows * 6 ? true : false}
-                onClick={() => handleSetVisibleDays()}
-              >
-                Load More
-              </Button>
-              <Button
-                disabled={visibleData <= 6 ? true : false}
-                className='m-5'
-                onClick={() => handleShowLess()}
-              >
-                Show less
-              </Button>
-            </div>
-          </div>
+          <div className='flex justify-center'></div>
           <Graph days={days} />
         </div>
         <div className='w-1/3'>

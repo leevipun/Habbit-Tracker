@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  Streak: {
+  streak: {
     type: Number,
     required: false,
   },

@@ -8,7 +8,7 @@ export const POST = async (req: NextRequest) => {
     const {email, username, password, habits} = await req.json();
     console.log(email, password, habits);
 
-    await connect(); // Make sure this function is defined correctly
+    await connect();
 
     const passwordHash = await bcrypt.hash(password, 15);
 
@@ -19,7 +19,8 @@ export const POST = async (req: NextRequest) => {
     if (existingUser) {
       console.log('User already exists');
       return new NextResponse('User already exists', {status: 400});
-    } else {
+    }
+    if (!existingUser) {
       console.log('Creating new user');
       const newUser = new User({
         email: email,
@@ -27,6 +28,7 @@ export const POST = async (req: NextRequest) => {
         passwordHash: passwordHash,
         created: new Date().toLocaleDateString().replaceAll('.', '/'),
         habits: habits,
+        streak: 1,
       });
 
       await newUser.save();
