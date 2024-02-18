@@ -73,16 +73,16 @@ export async function POST(req: NextRequest) {
         .replaceAll('.', '/');
 
       if (user.lastActive === yesterdayFormatted) {
+        console.log('streak');
         await User.findOneAndUpdate(
           {email: email},
-          {lastActive: formattedDate},
-          {streak: user.streak + 1}
+          {lastActive: formattedDate, streak: user.streak + 1}
         );
       } else {
+        console.log('no streak');
         await User.findOneAndUpdate(
           {email: email},
-          {lastActive: formattedDate},
-          {streak: 1}
+          {lastActive: formattedDate, streak: 0}
         );
       }
     }

@@ -130,27 +130,31 @@ export default function Page() {
             </div>
           )}
         </div>
-        <div className='bg-[#63898C] text-white shadow-lg p-2 rounded m-4 w-1/3'>
+        <div className='bg-[#63898C] text-white shadow-lg p-4 rounded-lg m-4 w-1/3'>
           {user?.habits.map((goal) => (
-            <>
-              <ul key={1}>
-                <li key={goal.id}>
-                  You have completed habbit {goal.name} {goal.done} times its
-                  {((goal.done / 365) * 100).toFixed(0)} % of the year
-                </li>
-              </ul>
-            </>
+            <ul key={goal.id}>
+              <li className='text-sm' key={goal.id}>
+                You have completed habit {goal.name} {goal.done} times, which is{' '}
+                {((goal.done / 365) * 100).toFixed(0)}% of the year
+              </li>
+            </ul>
           ))}
-          <ResponsiveContainer width='100%' height={400}>
-            <BarChart data={data}>
-              <CartesianGrid />
-              <XAxis dataKey='name' tick={{fontSize: 12}} stroke='00457E' />
-              <YAxis tick={{fontSize: 12}} stroke='00457E' />
-              <Tooltip cursor={{fill: 'transparent'}} />
-              <Legend stroke='00457E' />
-              <Bar dataKey='completionPercentage' fill='#00457E' barSize={80} />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className='mt-4'>
+            <ResponsiveContainer width='100%' height={400}>
+              <BarChart data={data}>
+                <CartesianGrid stroke='#B9848C' />
+                <XAxis dataKey='name' tick={{fontSize: 12}} stroke='#B9848C' />
+                <YAxis tick={{fontSize: 12}} stroke='#B9848C' />
+                <Tooltip cursor={{fill: 'transparent'}} />
+                <Legend stroke='#B9848C' />
+                <Bar
+                  dataKey='completionPercentage'
+                  fill='#B9848C'
+                  barSize={80}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>
