@@ -23,7 +23,6 @@ const Habbits = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState<any>(null);
   const [habbits, setHabbits] = useState<UserHabbits[]>([]);
-  const [showedDays, setShowedDays] = useState<Day[]>([]);
   const [days, setDays] = useState<Day[] | undefined>([]);
 
   const handleNewDay = async () => {

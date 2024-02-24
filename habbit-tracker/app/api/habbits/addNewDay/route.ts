@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
     const currentYear = `${date.getFullYear()}`;
 
     const month = await Month.findOne({months: currentMonth, user: email});
-    const year = await Month.findOne({months: currentYear, user: email});
+    const year = await Year.findOne({year: currentYear, user: email});
 
     console.log(month, year);
 

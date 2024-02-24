@@ -130,32 +130,18 @@ export default function Page() {
             </div>
           )}
         </div>
-        <div className='bg-[#63898C] text-white shadow-lg p-4 rounded-lg m-4 w-1/3'>
-          {user?.habits.map((goal) => (
-            <ul key={goal.id}>
-              <li className='text-sm' key={goal.id}>
-                You have completed habit {goal.name} {goal.done} times, which is{' '}
-                {((goal.done / 365) * 100).toFixed(0)}% of the year
-              </li>
-            </ul>
-          ))}
-          <div className='mt-4'>
-            <ResponsiveContainer width='100%' height={400}>
-              <BarChart data={data}>
-                <CartesianGrid stroke='#B9848C' />
-                <XAxis dataKey='name' tick={{fontSize: 12}} stroke='#B9848C' />
-                <YAxis tick={{fontSize: 12}} stroke='#B9848C' />
-                <Tooltip cursor={{fill: 'transparent'}} />
-                <Legend stroke='#B9848C' />
-                <Bar
-                  dataKey='completionPercentage'
-                  fill='#B9848C'
-                  barSize={80}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+        {user?.habits.map((goal) => (
+          <div
+            key={goal.id}
+            className='bg-[#63898C] text-white shadow-lg p-4 rounded-lg m-4 w-1/3'
+          >
+            <div>
+              <h3 className='text-xl'>{goal.name}</h3>
+              <p>{((goal.done / 365) * 100).toFixed(1)}% completed</p>
+              <p>Thats equal to {goal.done} times in this year</p>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
